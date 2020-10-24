@@ -75,17 +75,20 @@ let corefn = ({
       _p.batchStyleEles.updateStyle();
 
       let renderer = this.renderer();
-
+      // Handle errors where asynchronous calls 
+      // delete the instance 
+      if(renderer) {
       // notify the renderer of queued eles and event types
-      Object.keys( _p.batchNotifications ).forEach( eventName => {
-        let eles = _p.batchNotifications[eventName];
+        Object.keys( _p.batchNotifications ).forEach( eventName => {
+          let eles = _p.batchNotifications[eventName];
 
-        if( eles.empty() ){
-          renderer.notify( eventName );
-        } else {
-          renderer.notify( eventName, eles );
-        }
-      } );
+          if( eles.empty() ){
+            renderer.notify( eventName );
+          } else {
+            renderer.notify( eventName, eles );
+          }
+        } );
+      }
     }
 
     return this;
