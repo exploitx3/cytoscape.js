@@ -14316,17 +14316,21 @@ var corefn$4 = {
       // update style for dirty eles
       _p.batchStyleEles.updateStyle();
 
-      var renderer = this.renderer(); // notify the renderer of queued eles and event types
+      var renderer = this.renderer(); // Handle errors where asynchronous calls 
+      // delete the instance 
 
-      Object.keys(_p.batchNotifications).forEach(function (eventName) {
-        var eles = _p.batchNotifications[eventName];
+      if (renderer) {
+        // notify the renderer of queued eles and event types
+        Object.keys(_p.batchNotifications).forEach(function (eventName) {
+          var eles = _p.batchNotifications[eventName];
 
-        if (eles.empty()) {
-          renderer.notify(eventName);
-        } else {
-          renderer.notify(eventName, eles);
-        }
-      });
+          if (eles.empty()) {
+            renderer.notify(eventName);
+          } else {
+            renderer.notify(eventName, eles);
+          }
+        });
+      }
     }
 
     return this;
@@ -23631,6 +23635,11 @@ BRp$6.getLabelText = function (ele, prefix) {
     var ellipsis = "\u2026";
     var incLastCh = false;
 
+    if (this.calculateLabelDimensions(ele, text).width < _maxW) {
+      // the label already fits
+      return text;
+    }
+
     for (var i = 0; i < text.length; i++) {
       var widthWithNextCh = this.calculateLabelDimensions(ele, ellipsized + text[i] + ellipsis).width;
 
@@ -31570,7 +31579,7 @@ sheetfn.appendToStyle = function (style) {
   return style;
 };
 
-var version = "3.16.2";
+var version = "snapshot";
 
 var cytoscape = function cytoscape(options) {
   // if no options specified, use default
